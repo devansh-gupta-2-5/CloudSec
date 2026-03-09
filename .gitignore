@@ -1,2 +1,11 @@
 plan.txt
 src/server/app_data.db
+app_server
+monitor
+*.o
+*.out
+*.db
+*.sqlite
+logs/*.log
+gateway_access.log
+gateway_error.log
