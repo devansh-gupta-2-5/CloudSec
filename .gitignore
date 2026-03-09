@@ -6,6 +6,3 @@ monitor
 *.out
 *.db
 *.sqlite
-logs/*.log
-gateway_access.log
-gateway_error.log
