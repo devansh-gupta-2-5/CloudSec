@@ -1,0 +1,8 @@
+2026/03/09 13:15:14 [error] 28886#28886: *50 limiting requests, excess: 20.960 by zone "api_limit", client: 127.0.0.1, server: localhost, request: "GET /login HTTP/1.1", host: "localhost"
+2026/03/09 13:15:14 [error] 28886#28886: *51 limiting requests, excess: 20.910 by zone "api_limit", client: 127.0.0.1, server: localhost, request: "GET /login HTTP/1.1", host: "localhost"
+2026/03/09 13:15:14 [error] 28886#28886: *52 limiting requests, excess: 20.860 by zone "api_limit", client: 127.0.0.1, server: localhost, request: "GET /login HTTP/1.1", host: "localhost"
+2026/03/09 13:15:14 [error] 28887#28887: *53 limiting requests, excess: 20.820 by zone "api_limit", client: 127.0.0.1, server: localhost, request: "GET /login HTTP/1.1", host: "localhost"
+2026/03/09 13:15:14 [error] 28887#28887: *54 limiting requests, excess: 20.770 by zone "api_limit", client: 127.0.0.1, server: localhost, request: "GET /login HTTP/1.1", host: "localhost"
+2026/03/09 13:15:14 [error] 28887#28887: *55 limiting requests, excess: 20.740 by zone "api_limit", client: 127.0.0.1, server: localhost, request: "GET /login HTTP/1.1", host: "localhost"
+2026/03/09 13:15:14 [error] 28887#28887: *56 limiting requests, excess: 20.700 by zone "api_limit", client: 127.0.0.1, server: localhost, request: "GET /login HTTP/1.1", host: "localhost"
+2026/03/09 13:15:14 [error] 28887#28887: *57 limiting requests, excess: 20.650 by zone "api_limit", client: 127.0.0.1, server: localhost, request: "GET /login HTTP/1.1", host: "localhost"
