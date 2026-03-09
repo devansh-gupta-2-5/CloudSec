@@ -49,7 +49,7 @@ std::string hash_password(const std::string& password, const std::string& salt) 
 }
 
 // --- Utility: Audit Logging ---
-// Writes to the Assignment3/logs/auth.log file
+// [DEPRECATED] Writes to the CloudSec/logs/auth.log file
 void log_auth_event(const std::string& ip, const std::string& event, bool success) {
     // Navigating up two directories to hit the required Assignment3/logs/ folder
     std::lock_guard<std::mutex> lock(log_mutex); // Ensure thread-safe logging
@@ -64,6 +64,24 @@ void log_auth_event(const std::string& ip, const std::string& event, bool succes
                  << " | Event: " << event << "\n";
     } else {
         std::cerr << "[WARNING] Could not open auth.log. Make sure the logs/ directory exists.\n";
+    }
+}
+
+// --- Utility: Master Event Logger ---
+// Writes to specific files in the CloudSec/logs/ directory
+void log_event(const std::string& filename, const std::string& ip, const std::string& event, const std::string& status) {
+    std::lock_guard<std::mutex> lock(log_mutex); 
+    std::ofstream log_file("../../logs/" + filename, std::ios_base::app);
+    if (log_file.is_open()) {
+        auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+        std::string time_str = std::ctime(&now);
+        time_str.pop_back(); 
+
+        log_file << "[" << time_str << "] IP: " << ip 
+                 << " | Status: " << status 
+                 << " | Event: " << event << "\n";
+    } else {
+        std::cerr << "[WARNING] Could not open " << filename << ". Check directories.\n";
     }
 }
 
@@ -98,26 +116,20 @@ void init_database() {
 // --- Security Middleware ---
 struct SecurityMiddleware {
     struct context {};
-
     void before_handle(crow::request& req, crow::response& res, context& ctx) {
         std::string client_ip = req.get_header_value("X-Real-IP");
-        if (client_ip.empty()) {
-            client_ip = req.remote_ip_address; // Fallback
-        }
+        if (client_ip.empty()) client_ip = req.remote_ip_address;
 
         std::lock_guard<std::mutex> lock(blocklist_mutex);
-        
         if (blocked_ips.find(client_ip) != blocked_ips.end()) {
             res.code = 403;
             res.body = "Access Denied: IP Banned due to suspicious activity.";
-            log_auth_event(client_ip, "Blocked Request (Banned IP)", false);
+            // Log this to threats, as a banned IP is still trying to access the server
+            log_event("threats.log", client_ip, "Blocked Request (Banned IP)", "DENIED");
             res.end(); 
         }
     }
-
-    void after_handle(crow::request& req, crow::response& res, context& ctx) {
-        // General traffic logging could go here if needed
-    }
+    void after_handle(crow::request& req, crow::response& res, context& ctx) {}
 };
 
 int main() {
@@ -130,6 +142,7 @@ int main() {
         // If X-Real-IP is set, it means an external user tried to access this via Nginx. Block it.
         std::string real_ip = req.get_header_value("X-Real-IP");
         if (!real_ip.empty() || req.remote_ip_address != "127.0.0.1") {
+            log_event("threats.log", real_ip, "Unauthorized internal access attempt", "THREAT");
             return crow::response(401, "Unauthorized: Internal API only.");
         }
         auto json_body = crow::json::load(req.body);
@@ -138,8 +151,7 @@ int main() {
         std::string bad_ip = json_body["ip"].s();
         std::lock_guard<std::mutex> lock(blocklist_mutex);
         blocked_ips.insert(bad_ip);
-
-        log_auth_event("127.0.0.1", "System automated ban applied to IP: " + bad_ip, true);
+        log_event("mitigation.log", "127.0.0.1", "Automated ban applied to IP: " + bad_ip, "ACTION_TAKEN");
         return crow::response(200, "IP Banned successfully.");
     });
 
@@ -182,8 +194,7 @@ int main() {
                         .set_expires_at(std::chrono::system_clock::now() + std::chrono::minutes(15))
                         .sign(jwt::algorithm::hs256{SECRET_KEY});
 
-                    log_auth_event(client_ip, "Login successful for user: " + user, true);
-                    
+                    log_event("auth.log", client_ip, "Login successful for user: " + user, "SUCCESS");
                     sqlite3_finalize(stmt);
                     crow::json::wvalue response_json;
                     response_json["token"] = token;
@@ -194,13 +205,16 @@ int main() {
         }
 
         // If we reach here, either the user doesn't exist or password didn't match
-        log_auth_event(client_ip, "Failed login attempt for user: " + user, false);
+        log_event("auth.log", client_ip, "Failed login attempt for user: " + user, "FAILED");
         return crow::response(401, "Invalid credentials");
     });
 
-    // --- Route 3: Protected Resource ---
+    // --- Route 3: Protected Resource with JWT Tamper Auditing ---
     CROW_ROUTE(app, "/api/data")
     ([](const crow::request& req){
+        std::string client_ip = req.get_header_value("X-Real-IP");
+        if (client_ip.empty()) client_ip = req.remote_ip_address;
+
         auto auth_header = req.get_header_value("Authorization");
         if (auth_header.empty() || auth_header.substr(0, 7) != "Bearer ") {
             return crow::response(401, "Missing or invalid token");
@@ -216,6 +230,8 @@ int main() {
 
             return crow::response(200, "Secure data accessed successfully by " + decoded.get_payload_claim("role").as_string());
         } catch (const std::exception& e) {
+            // CRITICAL AUDIT: Someone sent a token with a forged signature or altered payload!
+            log_event("threats.log", client_ip, "JWT Tampering / Invalid Token Signature", "THREAT_DETECTED");
             return crow::response(401, "Token verification failed");
         }
     });
