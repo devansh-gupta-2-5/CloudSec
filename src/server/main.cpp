@@ -271,6 +271,72 @@ int main()
             return crow::response(401, "Token verification failed");
         } });
 
+    CROW_ROUTE(app, "/whoami")
+    ([](const crow::request &req)
+     {
+    // Get the IP from Nginx's header
+    std::string client_ip = req.get_header_value("X-Real-IP");
+    
+    // If empty, it means we bypassed Nginx and hit the server directly
+    if (client_ip.empty()) client_ip = req.remote_ip_address;
+
+    crow::json::wvalue res;
+    res["your_ip"] = client_ip;
+    res["source"] = req.get_header_value("X-Real-IP").empty() ? "Direct to Server" : "Via Nginx Gateway";
+    return res; });
+
+    CROW_ROUTE(app, "/admin/add_user").methods(crow::HTTPMethod::POST)([&](const crow::request &req)
+                                                                       {
+    // 1. JWT Authentication Check
+    auto auth_header = req.get_header_value("Authorization");
+    if (auth_header.empty() || auth_header.substr(0, 7) != "Bearer ") {
+        return crow::response(401, "Admin access required");
+    }
+
+    try {
+        std::string token = auth_header.substr(7);
+        auto decoded = jwt::decode(token);
+        auto verifier = jwt::verify().allow_algorithm(jwt::algorithm::hs256{SECRET_KEY}).with_issuer("cloud_auth_server");
+        verifier.verify(decoded);
+
+        if (decoded.get_payload_claim("role").as_string() != "admin") {
+            return crow::response(403, "Forbidden: Only admins can add users");
+        }
+
+        // 2. Parse New User Data
+        auto json = crow::json::load(req.body);
+        if (!json || !json.has("username") || !json.has("password") || !json.has("role")) {
+            return crow::response(400, "Missing fields (username, password, role)");
+        }
+
+        std::string new_user = json["username"].s();
+        std::string new_pass = json["password"].s();
+        std::string new_role = json["role"].s();
+
+        // 3. Hash and Store
+        std::string new_salt = generate_salt();
+        std::string new_hash = hash_password(new_pass, new_salt);
+
+        const char* sql = "INSERT INTO users (username, password_hash, salt, role) VALUES (?, ?, ?, ?)";
+        sqlite3_stmt* stmt;
+        if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+            sqlite3_bind_text(stmt, 1, new_user.c_str(), -1, SQLITE_STATIC);
+            sqlite3_bind_text(stmt, 2, new_hash.c_str(), -1, SQLITE_STATIC);
+            sqlite3_bind_text(stmt, 3, new_salt.c_str(), -1, SQLITE_STATIC);
+            sqlite3_bind_text(stmt, 4, new_role.c_str(), -1, SQLITE_STATIC);
+            
+            if (sqlite3_step(stmt) == SQLITE_DONE) {
+                sqlite3_finalize(stmt);
+                return crow::response(201, "User created successfully");
+            }
+        }
+        sqlite3_finalize(stmt);
+        return crow::response(500, "Database error or user already exists");
+
+    } catch (...) {
+        return crow::response(401, "Invalid token");
+    } });
+
     app.port(8080).multithreaded().run();
     sqlite3_close(db); // Cleanup on exit
     return 0;
