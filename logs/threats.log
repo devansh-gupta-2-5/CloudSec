@@ -4,3 +4,6 @@
 [Mon Mar  9 16:01:42 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
 [Mon Mar  9 16:01:43 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
 [Mon Mar  9 16:01:44 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Tue Mar 10 00:52:58 2026] IP: 127.0.0.1 | Status: MONITOR_ALERT | Event: Brute-force attack detected (5+ failed logins).
+[Tue Mar 10 00:52:58 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Tue Mar 10 00:53:20 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
