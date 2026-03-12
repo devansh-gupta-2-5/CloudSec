@@ -1,0 +1,9 @@
+[Thu Mar 12 17:13:15 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Thu Mar 12 17:14:40 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Thu Mar 12 17:18:05 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Thu Mar 12 17:19:47 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: admin
+[Thu Mar 12 17:19:50 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: admin' OR '1'='1
+[Thu Mar 12 17:19:50 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: user
+[Thu Mar 12 17:19:50 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: admin
+[Thu Mar 12 17:19:50 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: admin
+[Thu Mar 12 17:19:50 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: admin
