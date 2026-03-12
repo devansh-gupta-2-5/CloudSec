@@ -44,9 +44,9 @@ or
 make clean
 ```
 
-
+For a clean rebuild
 
 ```bash
 make clean
 ```
-For a clean rebuild
+
