@@ -1,0 +1,12 @@
+[Thu Mar 12 17:08:13 2026] IP: 127.0.0.1 | Status: THREAT | Event: Unauthorized attempt to access admin endpoint
+[Thu Mar 12 17:08:13 2026] IP: 127.0.0.1 | Status: THREAT_DETECTED | Event: JWT Tampering / Invalid Token Signature
+[Thu Mar 12 17:08:13 2026] IP: 127.0.0.1 | Status: THREAT_DETECTED | Event: JWT Tampering / Invalid Token Signature
+[Thu Mar 12 17:08:13 2026] IP: 127.0.0.1 | Status: THREAT_DETECTED | Event: JWT Tampering / Invalid Token Signature
+[Thu Mar 12 17:08:13 2026] IP: 127.0.0.1 | Status: MONITOR_ALERT | Event: Brute-force attack detected (5+ failed logins).
+[Thu Mar 12 17:08:13 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Thu Mar 12 17:08:13 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Thu Mar 12 17:08:13 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Thu Mar 12 17:08:14 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Thu Mar 12 17:08:14 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Thu Mar 12 17:08:14 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Thu Mar 12 17:08:14 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)

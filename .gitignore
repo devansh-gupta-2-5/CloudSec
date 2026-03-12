@@ -15,9 +15,6 @@ app_data.db
 *.db-shm
 *.db-wal
 
-# --- Logs (Crucial for STRIDE/Privacy) ---
-logs/
-*.log
 
 # --- OS & IDE Junk ---
 .DS_Store
