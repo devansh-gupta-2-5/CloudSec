@@ -32,6 +32,20 @@ make stop
 ```
 To stop the nginx server
 
+In case you get IP banned while testing, run 
+
+```bash
+make stop 
+```
+
+or
+
+```bash
+make clean
+```
+
+
+
 ```bash
 make clean
 ```
