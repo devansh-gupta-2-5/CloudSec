@@ -59,7 +59,7 @@ void log_auth_event(const std::string &ip, const std::string &event, bool succes
 {
     // Navigating up two directories to hit the required Assignment3/logs/ folder
     std::lock_guard<std::mutex> lock(log_mutex); // Ensure thread-safe logging
-    std::ofstream log_file("../../logs/auth.log", std::ios_base::app);
+    std::ofstream log_file("logs/auth.log", std::ios_base::app);
     if (log_file.is_open())
     {
         auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -81,7 +81,7 @@ void log_auth_event(const std::string &ip, const std::string &event, bool succes
 void log_event(const std::string &filename, const std::string &ip, const std::string &event, const std::string &status)
 {
     std::lock_guard<std::mutex> lock(log_mutex);
-    std::ofstream log_file("../../logs/" + filename, std::ios_base::app);
+    std::ofstream log_file("logs/" + filename, std::ios_base::app);
     if (log_file.is_open())
     {
         auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -124,11 +124,8 @@ void init_database()
     std::string mod_pass_hashed = hash_password("mod123", salt);
     std::string user_pass_hashed = hash_password("user123", salt);
     std::string sql_insert_admin = "INSERT INTO users (username, password_hash, salt, role) VALUES ('admin', '" + admin_pass_hashed + "', '" + salt + "', 'admin');";
-    std::string sql_insert_mod = "INSERT INTO users (username, password_hash, salt, role) VALUES ('moderator', '" + mod_pass_hashed + "', '" + salt + "', 'moderator');";
-    std::string sql_insert_user = "INSERT INTO users (username, password_hash, salt, role) VALUES ('user', '" + user_pass_hashed + "', '" + salt + "', 'user');";
+    log_event("auth.log", "127.0.0.1", "Default admin user created", "INFO");
     sqlite3_exec(db, sql_insert_admin.c_str(), 0, 0, &errMsg);
-    sqlite3_exec(db, sql_insert_mod.c_str(), 0, 0, &errMsg);
-    sqlite3_exec(db, sql_insert_user.c_str(), 0, 0, &errMsg);
 
     if (errMsg)
         sqlite3_free(errMsg);
@@ -290,6 +287,7 @@ int main()
     // 1. JWT Authentication Check
     auto auth_header = req.get_header_value("Authorization");
     if (auth_header.empty() || auth_header.substr(0, 7) != "Bearer ") {
+        log_event("threats.log", req.remote_ip_address, "Unauthorized attempt to access admin endpoint", "THREAT");
         return crow::response(401, "Admin access required");
     }
 
@@ -300,12 +298,14 @@ int main()
         verifier.verify(decoded);
 
         if (decoded.get_payload_claim("role").as_string() != "admin") {
+            log_event("threats.log", req.remote_ip_address, "Unauthorized attempt to access admin endpoint", "THREAT");
             return crow::response(403, "Forbidden: Only admins can add users");
         }
 
         // 2. Parse New User Data
         auto json = crow::json::load(req.body);
         if (!json || !json.has("username") || !json.has("password") || !json.has("role")) {
+            log_event("threats.log", req.remote_ip_address, "Invalid user data provided", "THREAT");
             return crow::response(400, "Missing fields (username, password, role)");
         }
 
@@ -327,6 +327,7 @@ int main()
             
             if (sqlite3_step(stmt) == SQLITE_DONE) {
                 sqlite3_finalize(stmt);
+                log_event("auth.log", decoded.get_payload_claim("user").as_string(), "Admin added new user: " + new_user, "SUCCESS");
                 return crow::response(201, "User created successfully");
             }
         }
@@ -334,6 +335,7 @@ int main()
         return crow::response(500, "Database error or user already exists");
 
     } catch (...) {
+        log_event("threats.log", req.remote_ip_address, "Invalid token provided", "THREAT");
         return crow::response(401, "Invalid token");
     } });
 

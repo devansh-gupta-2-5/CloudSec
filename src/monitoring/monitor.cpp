@@ -10,9 +10,9 @@
 #include <thread>
 #include <curl/curl.h>
 
-const std::string AUTH_LOG_FILE = "../../logs/auth.log";
-const std::string THREATS_LOG_FILE = "../../logs/threats.log";
-const std::string MITIGATION_LOG_FILE = "../../logs/mitigation.log"; // Added mitigation log
+const std::string AUTH_LOG_FILE = "logs/auth.log";
+const std::string THREATS_LOG_FILE = "logs/threats.log";
+const std::string MITIGATION_LOG_FILE = "logs/mitigation.log"; // Added mitigation log
 const std::string BAN_URL = "http://127.0.0.1:8080/internal/ban";
 const int FAIL_LIMIT = 5;
 const int TIME_WINDOW_SEC = 60;

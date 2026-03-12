@@ -1,8 +1,29 @@
-plan.txt
-src/server/app_data.db
+# --- Binaries & Build Artifacts ---
 app_server
 monitor
+client
 *.o
 *.out
+server_internal.log
+
+# --- Database & Storage ---
 *.db
 *.sqlite
+app_data.db
+# Shared memory or lock files created by SQLite
+*.db-journal
+*.db-shm
+*.db-wal
+
+# --- Logs (Crucial for STRIDE/Privacy) ---
+logs/
+*.log
+
+# --- OS & IDE Junk ---
+.DS_Store
+.vscode/
+.idea/
+build/
+
+# --- Environment/Secrets ---
+.env
