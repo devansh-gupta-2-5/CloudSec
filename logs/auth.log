@@ -7,3 +7,12 @@
 [Thu Mar 12 17:19:50 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: admin
 [Thu Mar 12 17:19:50 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: admin
 [Thu Mar 12 17:19:50 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: admin
+[Fri Mar 27 02:27:14 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Fri Mar 27 02:32:53 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Fri Mar 27 02:33:38 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: New user registered successfully: attacker_1774559018
+[Fri Mar 27 02:33:38 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774559018
+[Fri Mar 27 02:33:39 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774559018
+[Fri Mar 27 02:33:39 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774559018
+[Fri Mar 27 02:33:40 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774559018
+[Fri Mar 27 02:33:40 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774559018
+[Fri Mar 27 02:34:44 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created

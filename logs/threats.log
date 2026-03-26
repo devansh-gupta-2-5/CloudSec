@@ -14,3 +14,12 @@
 [Thu Mar 12 17:19:51 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
 [Thu Mar 12 17:19:51 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
 [Thu Mar 12 17:19:51 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Fri Mar 27 02:33:40 2026] IP: 127.0.0.1 | Status: MONITOR_ALERT | Event: Brute-force attack detected (5+ failed logins).
+[Fri Mar 27 02:33:40 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Fri Mar 27 02:33:40 2026] IP: 127.0.0.1 | Status: MONITOR_ALERT | Event: Brute-force attack detected (5+ failed logins).
+[Fri Mar 27 02:33:41 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Fri Mar 27 02:33:41 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Fri Mar 27 02:33:42 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Fri Mar 27 02:33:42 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Fri Mar 27 02:33:43 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Fri Mar 27 02:33:56 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
