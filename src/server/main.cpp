@@ -233,6 +233,52 @@ int main()
         log_event("auth.log", client_ip, "Failed login attempt for user: " + user, "FAILED");
         return crow::response(401, "Invalid credentials"); });
 
+        // --- Route 3A: Public User Registration ---
+    CROW_ROUTE(app, "/register").methods(crow::HTTPMethod::POST)([](const crow::request &req)
+    {
+        std::string client_ip = req.get_header_value("X-Real-IP");
+        if (client_ip.empty()) client_ip = req.remote_ip_address;
+
+        auto json = crow::json::load(req.body);
+        if (!json || !json.has("username") || !json.has("password")) {
+            return crow::response(400, "Missing fields (username, password)");
+        }
+
+        std::string new_user = json["username"].s();
+        std::string new_pass = json["password"].s();
+
+        // Enforce password length constraints (8 to 20 characters)
+        if (new_pass.length() < 8 || new_pass.length() > 20) {
+            log_event("auth.log", client_ip, "Failed registration: Invalid password length for user " + new_user, "FAILED");
+            return crow::response(400, "Password must be between 8 and 20 characters long");
+        }
+
+        std::string new_salt = generate_salt();
+        std::string new_hash = hash_password(new_pass, new_salt);
+        std::string default_role = "user";
+
+        // Insert new user into the database
+        const char* sql = "INSERT INTO users (username, password_hash, salt, role) VALUES (?, ?, ?, ?)";
+        sqlite3_stmt* stmt;
+        
+        if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK) {
+            sqlite3_bind_text(stmt, 1, new_user.c_str(), -1, SQLITE_STATIC);
+            sqlite3_bind_text(stmt, 2, new_hash.c_str(), -1, SQLITE_STATIC);
+            sqlite3_bind_text(stmt, 3, new_salt.c_str(), -1, SQLITE_STATIC);
+            sqlite3_bind_text(stmt, 4, default_role.c_str(), -1, SQLITE_STATIC);
+            
+            if (sqlite3_step(stmt) == SQLITE_DONE) {
+                sqlite3_finalize(stmt);
+                log_event("auth.log", client_ip, "New user registered successfully: " + new_user, "SUCCESS");
+                return crow::response(201, "Registration successful. Please proceed to /login");
+            }
+        }
+        
+        sqlite3_finalize(stmt);
+        log_event("auth.log", client_ip, "Failed registration: Username already exists (" + new_user + ")", "FAILED");
+        return crow::response(409, "Username already exists");
+    });
+
     // --- Route 3: Protected Resource with JWT Tamper Auditing ---
     CROW_ROUTE(app, "/api/data")
     ([](const crow::request &req)

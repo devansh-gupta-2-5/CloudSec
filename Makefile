@@ -45,7 +45,10 @@ run: all
 	@sleep 2
 	@echo "[RUN] Starting Nginx Gateway on 8081..."
 	sudo nginx -p $(shell pwd) -c $(NGINX_CONF) -g "daemon off;"
-
+#5A. Simulate attack scenarios
+simulate:
+	chmod +x simulate.sh
+	./simulate.sh
 # 6. Stop all processes
 stop:
 	-pkill -f app_server
