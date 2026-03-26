@@ -31,7 +31,7 @@ monitor: $(MONITOR_SRC)
 
 # 4. Clean start: Wipe DB and logs
 clean:
-	rm -f app_server client monitor app_data.db logs/*.log
+	rm -f app_server client monitor app_data.db
 	@echo "[CLEAN] Binaries, database, and logs removed."
 
 # 5. Launch the full stack
