@@ -115,6 +115,8 @@ int main()
                 std::string token = out["token"].s();
                 std::cout << "[SUCCESS] Logged in as: " << user << "\n";
 
+                std::cout << "[TOKEN] " << token << "\n\n";
+
                 if (user == "admin")
                 {
                     char admin_choice;
