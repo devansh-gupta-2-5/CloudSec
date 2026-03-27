@@ -58,3 +58,12 @@
 [Fri Mar 27 10:17:29 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed registration: Username already exists (user1)
 [Fri Mar 27 10:17:57 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: New user registered successfully: user1234
 [Fri Mar 27 10:18:25 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: cuntass
+[Fri Mar 27 11:02:52 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: admin
+[Fri Mar 27 11:03:33 2026] IP: admin | Status: SUCCESS | Event: Admin added new user: user12345
+[Fri Mar 27 11:03:47 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: user12345
+[Fri Mar 27 11:04:11 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: user12345
+[Fri Mar 27 11:05:35 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed registration: Weak password for user attacker_1774589735
+[Fri Mar 27 11:05:35 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774589735
+[Fri Mar 27 11:05:35 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774589735
+[Fri Mar 27 11:05:36 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774589735
+[Fri Mar 27 11:05:36 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774589735

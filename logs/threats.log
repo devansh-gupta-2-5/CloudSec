@@ -31,3 +31,16 @@
 [Fri Mar 27 09:27:52 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
 [Fri Mar 27 09:35:25 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
 [Fri Mar 27 10:16:34 2026] IP: 127.0.0.1 | Status: REJECTED | Event: Admin attempted to create user with weak password: cuntass
+[Fri Mar 27 11:05:36 2026] IP: 127.0.0.1 | Status: MONITOR_ALERT | Event: Brute-force attack detected (5+ failed logins).
+[Fri Mar 27 11:05:36 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Fri Mar 27 11:05:36 2026] IP: 127.0.0.1 | Status: MONITOR_ALERT | Event: Brute-force attack detected (5+ failed logins).
+[Fri Mar 27 11:05:36 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Fri Mar 27 11:05:36 2026] IP: 127.0.0.1 | Status: MONITOR_ALERT | Event: Brute-force attack detected (5+ failed logins).
+[Fri Mar 27 11:05:37 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Fri Mar 27 11:05:37 2026] IP: 127.0.0.1 | Status: MONITOR_ALERT | Event: Brute-force attack detected (5+ failed logins).
+[Fri Mar 27 11:05:37 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Fri Mar 27 11:05:37 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Fri Mar 27 11:05:38 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Fri Mar 27 11:05:38 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Fri Mar 27 11:05:39 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
+[Fri Mar 27 11:05:39 2026] IP: 127.0.0.1 | Status: DENIED | Event: Blocked Request (Banned IP)
