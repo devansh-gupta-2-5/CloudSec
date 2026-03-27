@@ -13,7 +13,7 @@
 #include <sstream>
 #include <iomanip>
 #include <chrono>
-
+#include <cctype>
 // --- Global State ---
 std::unordered_set<std::string> blocked_ips;
 std::mutex blocklist_mutex;
@@ -51,6 +51,27 @@ std::string hash_password(const std::string &password, const std::string &salt)
         ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
     }
     return ss.str();
+}
+
+// --- Utility: Strong Password Validation ---
+bool is_strong_password(const std::string& password) {
+    if (password.length() < 8 || password.length() > 20) {
+        return false;
+    }
+    
+    bool has_lower = false;
+    bool has_upper = false;
+    bool has_digit = false;
+    bool has_special = false;
+    
+    for (char c : password) {
+        if (std::islower(c)) has_lower = true;
+        else if (std::isupper(c)) has_upper = true;
+        else if (std::isdigit(c)) has_digit = true;
+        else if (std::ispunct(c) || !std::isalnum(c)) has_special = true;
+    }
+    
+    return has_lower && has_upper && has_digit && has_special;
 }
 
 // --- Utility: Audit Logging ---
@@ -247,10 +268,10 @@ int main()
         std::string new_user = json["username"].s();
         std::string new_pass = json["password"].s();
 
-        // Enforce password length constraints (8 to 20 characters)
-        if (new_pass.length() < 8 || new_pass.length() > 20) {
-            log_event("auth.log", client_ip, "Failed registration: Invalid password length for user " + new_user, "FAILED");
-            return crow::response(400, "Password must be between 8 and 20 characters long");
+        // Enforce strong password constraints
+        if (!is_strong_password(new_pass)) {
+            log_event("auth.log", client_ip, "Failed registration: Weak password for user " + new_user, "FAILED");
+            return crow::response(400, "Password must be 8-20 characters long, and include at least one uppercase letter, one lowercase letter, one number, and one special character.");
         }
 
         std::string new_salt = generate_salt();
@@ -358,6 +379,12 @@ int main()
         std::string new_user = json["username"].s();
         std::string new_pass = json["password"].s();
         std::string new_role = json["role"].s();
+
+        // Enforce strong password constraints for admins too
+        if (!is_strong_password(new_pass)) {
+            log_event("threats.log", req.remote_ip_address, "Admin attempted to create user with weak password: " + new_user, "REJECTED");
+            return crow::response(400, "Password must be 8-20 characters, with 1 uppercase, 1 lowercase, 1 number, and 1 special char.");
+        }
 
         // 3. Hash and Store
         std::string new_salt = generate_salt();

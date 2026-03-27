@@ -2,9 +2,8 @@
 #include <iostream>
 #include <string>
 #include <curl/curl.h>
-#include "../server/include/crow_all.h" // Using Crow's JSON parser for convenience
+#include "../server/include/crow_all.h"
 
-// Helper to handle the response from Nginx
 size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
 {
     ((std::string *)userp)->append((char *)contents, size * nmemb);
@@ -37,8 +36,8 @@ Response send_request(const std::string &url, const std::string &method, const s
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resp.body);
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L); // Don't verify the certificate
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L); // Don't verify the hostname
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
 
         if (method == "POST")
         {
@@ -57,56 +56,90 @@ Response send_request(const std::string &url, const std::string &method, const s
 int main()
 {
     curl_global_init(CURL_GLOBAL_ALL);
-    std::string gateway = "http://127.0.0.1:8081"; // Pointing to Nginx
+    std::string gateway = "http://127.0.0.1:8081";
 
     while (true)
     {
-        std::string user, pass;
         std::cout << "\n========================\n";
         std::cout << "   CloudSec Auth CLI\n";
         std::cout << "========================\n";
-        std::cout << "Username (or 'exit'): ";
-        std::cin >> user;
-        if (user == "exit")
+        std::cout << "1. Login\n";
+        std::cout << "2. Register New User\n";
+        std::cout << "3. Exit\n";
+        std::cout << "Choose an option: ";
+        
+        std::string choice;
+        std::cin >> choice;
+
+        if (choice == "3" || choice == "exit")
             break;
 
-        std::cout << "Password: ";
-        std::cin >> pass;
-
-        std::string login_json = "{\"username\":\"" + user + "\", \"password\":\"" + pass + "\"}";
-        Response res = send_request(gateway + "/login", "POST", login_json);
-
-        if (res.code == 200)
+        if (choice == "2") 
         {
-            auto out = crow::json::load(res.body);
-            std::string token = out["token"].s();
-            std::cout << "[SUCCESS] Logged in as: " << user << "\n";
+            std::string user, pass;
+            std::cout << "--- Register ---\n";
+            std::cout << "New Username: ";
+            std::cin >> user;
+            std::cout << "New Password (8-20 chars, 1 upper, 1 lower, 1 num, 1 special): ";
+            std::cin >> pass;
 
-            // If admin, show extra options
-            if (user == "admin")
+            std::string reg_json = "{\"username\":\"" + user + "\", \"password\":\"" + pass + "\"}";
+            Response res = send_request(gateway + "/register", "POST", reg_json);
+
+            if (res.code == 201)
             {
-                char choice;
-                std::cout << "Would you like to add a new user? (y/n): ";
-                std::cin >> choice;
-                if (choice == 'y')
-                {
-                    std::string n_user, n_pass, n_role;
-                    std::cout << "New Username: ";
-                    std::cin >> n_user;
-                    std::cout << "New Password: ";
-                    std::cin >> n_pass;
-                    std::cout << "Role (user/moderator): ";
-                    std::cin >> n_role;
+                std::cout << "[SUCCESS] " << res.body << "\n";
+            }
+            else
+            {
+                std::cout << "[FAIL] Code: " << res.code << " | " << res.body << "\n";
+            }
+            continue; 
+        }
 
-                    std::string body = "{\"username\":\"" + n_user + "\",\"password\":\"" + n_pass + "\",\"role\":\"" + n_role + "\"}";
-                    Response add_res = send_request(gateway + "/admin/add_user", "POST", body, token);
-                    std::cout << "[STATUS] " << add_res.body << "\n";
+        if (choice == "1") 
+        {
+            std::string user, pass;
+            std::cout << "--- Login ---\n";
+            std::cout << "Username: ";
+            std::cin >> user;
+            std::cout << "Password: ";
+            std::cin >> pass;
+
+            std::string login_json = "{\"username\":\"" + user + "\", \"password\":\"" + pass + "\"}";
+            Response res = send_request(gateway + "/login", "POST", login_json);
+
+            if (res.code == 200)
+            {
+                auto out = crow::json::load(res.body);
+                std::string token = out["token"].s();
+                std::cout << "[SUCCESS] Logged in as: " << user << "\n";
+
+                if (user == "admin")
+                {
+                    char admin_choice;
+                    std::cout << "Would you like to add a new user/mod? (y/n): ";
+                    std::cin >> admin_choice;
+                    if (admin_choice == 'y')
+                    {
+                        std::string n_user, n_pass, n_role;
+                        std::cout << "New Username: ";
+                        std::cin >> n_user;
+                        std::cout << "New Password: ";
+                        std::cin >> n_pass;
+                        std::cout << "Role (user/moderator): ";
+                        std::cin >> n_role;
+
+                        std::string body = "{\"username\":\"" + n_user + "\",\"password\":\"" + n_pass + "\",\"role\":\"" + n_role + "\"}";
+                        Response add_res = send_request(gateway + "/admin/add_user", "POST", body, token);
+                        std::cout << "[STATUS] " << add_res.body << "\n";
+                    }
                 }
             }
-        }
-        else
-        {
-            std::cout << "[FAIL] Code: " << res.code << " | " << res.body << "\n";
+            else
+            {
+                std::cout << "[FAIL] Code: " << res.code << " | " << res.body << "\n";
+            }
         }
     }
 

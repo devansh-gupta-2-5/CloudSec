@@ -16,3 +16,45 @@
 [Fri Mar 27 02:33:40 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774559018
 [Fri Mar 27 02:33:40 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774559018
 [Fri Mar 27 02:34:44 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Fri Mar 27 09:24:56 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Fri Mar 27 09:26:05 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: abc
+[Fri Mar 27 09:27:48 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: New user registered successfully: attacker_1774583868
+[Fri Mar 27 09:27:48 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774583868
+[Fri Mar 27 09:27:48 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774583868
+[Fri Mar 27 09:27:49 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774583868
+[Fri Mar 27 09:27:49 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774583868
+[Fri Mar 27 09:27:50 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: attacker_1774583868
+[Fri Mar 27 09:36:09 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Fri Mar 27 09:36:21 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: admin
+[Fri Mar 27 09:36:42 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: mod
+[Fri Mar 27 09:37:57 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: moderator
+[Fri Mar 27 09:43:25 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: moderator
+[Fri Mar 27 09:43:37 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: user
+[Fri Mar 27 09:43:44 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: admin
+[Fri Mar 27 09:43:59 2026] IP: admin | Status: SUCCESS | Event: Admin added new user: user
+[Fri Mar 27 09:44:36 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: user
+[Fri Mar 27 09:44:48 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: admin
+[Fri Mar 27 09:44:59 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: oderator
+[Fri Mar 27 09:45:06 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: admin
+[Fri Mar 27 09:45:21 2026] IP: admin | Status: SUCCESS | Event: Admin added new user: moderator
+[Fri Mar 27 09:45:32 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: moderator
+[Fri Mar 27 09:54:44 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Fri Mar 27 09:55:05 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Fri Mar 27 09:55:56 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Fri Mar 27 09:57:09 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Fri Mar 27 10:01:42 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Fri Mar 27 10:03:17 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Fri Mar 27 10:03:40 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: admin
+[Fri Mar 27 10:04:00 2026] IP: admin | Status: SUCCESS | Event: Admin added new user: abcd
+[Fri Mar 27 10:04:07 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: admin
+[Fri Mar 27 10:04:17 2026] IP: admin | Status: SUCCESS | Event: Admin added new user: user1
+[Fri Mar 27 10:08:01 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Fri Mar 27 10:08:23 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: admin
+[Fri Mar 27 10:08:31 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed registration: Weak password for user user
+[Fri Mar 27 10:15:20 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Fri Mar 27 10:16:18 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: admin
+[Fri Mar 27 10:16:52 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: admin
+[Fri Mar 27 10:17:09 2026] IP: admin | Status: SUCCESS | Event: Admin added new user: cuntass
+[Fri Mar 27 10:17:29 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed registration: Username already exists (user1)
+[Fri Mar 27 10:17:57 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: New user registered successfully: user1234
+[Fri Mar 27 10:18:25 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: cuntass
