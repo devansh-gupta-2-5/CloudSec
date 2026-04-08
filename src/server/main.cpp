@@ -141,9 +141,9 @@ void init_database()
 
     // Insert default admin safely with a HASHED password
     std::string salt = generate_salt();
-    std::string admin_pass_hashed = hash_password("admin123", salt);
-    std::string mod_pass_hashed = hash_password("mod123", salt);
-    std::string user_pass_hashed = hash_password("user123", salt);
+    std::string admin_pass_hashed = hash_password("Admin@123", salt);
+    std::string mod_pass_hashed = hash_password("Mod@123", salt);
+    std::string user_pass_hashed = hash_password("User@123", salt);
     std::string sql_insert_admin = "INSERT INTO users (username, password_hash, salt, role) VALUES ('admin', '" + admin_pass_hashed + "', '" + salt + "', 'admin');";
     log_event("auth.log", "127.0.0.1", "Default admin user created", "INFO");
     sqlite3_exec(db, sql_insert_admin.c_str(), 0, 0, &errMsg);

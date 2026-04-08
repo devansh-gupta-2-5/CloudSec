@@ -70,3 +70,11 @@
 [Fri Mar 27 11:15:09 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
 [Fri Mar 27 11:16:04 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: admin
 [Fri Mar 27 11:17:07 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: admin
+[Wed Apr  8 09:45:22 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created
+[Wed Apr  8 09:45:43 2026] IP: 127.0.0.1 | Status: SUCCESS | Event: Login successful for user: admin
+[Wed Apr  8 09:45:45 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: admin' OR '1'='1
+[Wed Apr  8 09:45:45 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: user
+[Wed Apr  8 09:45:46 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: admin
+[Wed Apr  8 09:45:46 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: admin
+[Wed Apr  8 09:45:46 2026] IP: 127.0.0.1 | Status: FAILED | Event: Failed login attempt for user: admin
+[Wed Apr  8 09:46:19 2026] IP: 127.0.0.1 | Status: INFO | Event: Default admin user created

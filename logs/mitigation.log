@@ -12,3 +12,5 @@
 [Fri Mar 27 11:05:36 2026] IP: 127.0.0.1 | Status: ACTION_TAKEN | Event: Monitor automatically triggered application-layer ban.
 [Fri Mar 27 11:05:36 2026] IP: 127.0.0.1 | Status: ACTION_TAKEN | Event: Monitor automatically triggered application-layer ban.
 [Fri Mar 27 11:05:37 2026] IP: 127.0.0.1 | Status: ACTION_TAKEN | Event: Monitor automatically triggered application-layer ban.
+[Wed Apr  8 09:45:46 2026] IP: 127.0.0.1 | Status: ACTION_TAKEN | Event: Automated ban applied to IP: 127.0.0.1
+[Wed Apr  8 09:45:46 2026] IP: 127.0.0.1 | Status: ACTION_TAKEN | Event: Monitor automatically triggered application-layer ban.
