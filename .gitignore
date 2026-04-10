@@ -11,6 +11,7 @@ server_internal.log
 *.db
 *.sqlite
 app_data.db
+*.txt
 # Shared memory or lock files created by SQLite
 *.db-journal
 *.db-shm
