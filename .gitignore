@@ -1,5 +1,6 @@
 # --- Binaries & Build Artifacts ---
 app_server
+node_server
 monitor
 client
 *.o
