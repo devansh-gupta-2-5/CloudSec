@@ -1,5 +1,3 @@
-// node_server.cpp
-//
 #define CROW_ENABLE_SSL
 #include "include/crow_all.h" 
 #include <mysql.h>
@@ -12,8 +10,8 @@
 #include <iomanip>
 #include <vector>
 
-const std::string MACHINE_0_IP = "10.61.56.1"; // CHANGE THIS
-const std::string NODE_NAME = "node_ubuntu"; // UNIQUE TO MACHINE 2
+const std::string MACHINE_0_IP = "10.70.69.63"; // CHANGE THIS
+const std::string NODE_NAME = "node_mac"; // CHANGE THIS PER MACHINE
 
 std::string ACTIVE_MASTER_KEY = "";
 MYSQL *db_conn;
@@ -23,6 +21,7 @@ size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) {
     return size * nmemb;
 }
 
+// --- 1. Startup Infrastructure ---
 bool fetch_master_key() {
     std::cout << "[*] Fetching Master Key from KMS...\n";
     CURL *curl = curl_easy_init();
@@ -41,17 +40,15 @@ bool fetch_master_key() {
     CURLcode res = curl_easy_perform(curl);
     curl_easy_cleanup(curl);
 
-    if (res != CURLE_OK) {
-        std::cerr << "[-] Failed to reach KMS.\n";
-        return false;
+    if (res == CURLE_OK) {
+        auto json = crow::json::load(resp);
+        if (json && json.has("master_key")) {
+            ACTIVE_MASTER_KEY = json["master_key"].s();
+            std::cout << "[+] Master Key acquired.\n";
+            return true;
+        }
     }
-
-    auto json = crow::json::load(resp);
-    if (!json || !json.has("master_key")) return false;
-    
-    ACTIVE_MASTER_KEY = json["master_key"].s();
-    std::cout << "[+] Master Key acquired and loaded into memory.\n";
-    return true;
+    return false;
 }
 
 bool init_db() {
@@ -61,13 +58,13 @@ bool init_db() {
     mysql_options(db_conn, MYSQL_OPT_SSL_VERIFY_SERVER_CERT, &my_false);
 
     if (mysql_real_connect(db_conn, MACHINE_0_IP.c_str(), "cloudnode", "securepass123", "cloudsec_db", 3306, NULL, CLIENT_SSL) == NULL) {
-        std::cerr << "[-] Database connection failed: " << mysql_error(db_conn) << "\n";
         return false;
     }
     std::cout << "[+] Connected to Central Database securely.\n";
     return true;
 }
 
+// --- 2. Cryptography ---
 std::string encrypt_data(std::vector<unsigned char>& data) {
     unsigned char iv[12];
     RAND_bytes(iv, sizeof(iv)); 
@@ -97,20 +94,65 @@ std::string encrypt_data(std::vector<unsigned char>& data) {
     return ss.str();
 }
 
+bool decrypt_data(std::vector<unsigned char>& data, const std::string& iv_hex) {
+    // 1. Convert hex IV back to bytes
+    unsigned char iv[12];
+    for (int i = 0; i < 12; ++i) {
+        std::string byteString = iv_hex.substr(i * 2, 2);
+        iv[i] = (unsigned char)strtol(byteString.c_str(), NULL, 16);
+    }
+
+    if (data.size() < 16) return false; // File too small to contain auth tag
+
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    int len;
+    int plaintext_len;
+    
+    // 2. Separate the Ciphertext from the 16-byte Auth Tag
+    size_t ciphertext_len = data.size() - 16;
+    std::vector<unsigned char> ciphertext(data.begin(), data.begin() + ciphertext_len);
+    std::vector<unsigned char> tag(data.end() - 16, data.end());
+    std::vector<unsigned char> plaintext(ciphertext_len);
+
+    // 3. Decrypt
+    EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
+    EVP_DecryptInit_ex(ctx, NULL, NULL, (unsigned char*)ACTIVE_MASTER_KEY.c_str(), iv);
+    EVP_DecryptUpdate(ctx, plaintext.data(), &len, ciphertext.data(), ciphertext_len);
+    plaintext_len = len;
+
+    // 4. Verify Auth Tag
+    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, 16, tag.data());
+    int ret = EVP_DecryptFinal_ex(ctx, plaintext.data() + len, &len);
+    EVP_CIPHER_CTX_free(ctx);
+
+    if (ret > 0) { // Success: Data is authentic and decrypted
+        plaintext_len += len;
+        plaintext.resize(plaintext_len);
+        data = plaintext;
+        return true;
+    }
+    return false; // Failure: Wrong key or tampered data
+}
+
+
+// --- 3. Main Application ---
 int main() {
     if (!fetch_master_key() || !init_db()) {
-        std::cerr << "[-] Critical infrastructure unavailable. Shutting down.\n";
+        std::cerr << "[-] Critical infrastructure unavailable.\n";
         return 1;
     }
 
     crow::SimpleApp app;
 
+    // UPLOAD ROUTE
     CROW_ROUTE(app, "/upload").methods(crow::HTTPMethod::POST)([](const crow::request& req) {
         std::string owner = "test_user"; 
-        std::string filename = "uploaded_file.txt";
+        
+        // Grab dynamic filename from client header
+        std::string filename = req.get_header_value("X-Filename");
+        if (filename.empty()) filename = "unnamed_upload.dat";
 
         std::vector<unsigned char> file_buffer(req.body.begin(), req.body.end());
-        
         std::string iv_hex = encrypt_data(file_buffer);
 
         std::string filepath = "storage/" + filename;
@@ -120,11 +162,45 @@ int main() {
 
         std::string query = "INSERT INTO files (filename, owner_username, stored_on_node, encryption_iv) VALUES ('" 
                             + filename + "', '" + owner + "', '" + NODE_NAME + "', '" + iv_hex + "')";
-        if (mysql_query(db_conn, query.c_str())) {
-            return crow::response(500, "Database error");
-        }
+        if (mysql_query(db_conn, query.c_str())) return crow::response(500, "Database error");
 
         return crow::response(200, "File encrypted and stored securely.");
+    });
+
+    // DOWNLOAD ROUTE
+    CROW_ROUTE(app, "/download").methods(crow::HTTPMethod::GET)([](const crow::request& req) {
+        std::string filename = req.get_header_value("X-Filename");
+        if (filename.empty()) return crow::response(400, "Missing X-Filename");
+
+        // 1. Read encrypted file from disk
+        std::string filepath = "storage/" + filename;
+        std::ifstream infile(filepath, std::ios::binary);
+        if (!infile) return crow::response(404, "File not found on this node.");
+        std::vector<unsigned char> file_buffer((std::istreambuf_iterator<char>(infile)), std::istreambuf_iterator<char>());
+        infile.close();
+
+        // 2. Fetch the IV from the Database
+        std::string query = "SELECT encryption_iv FROM files WHERE filename = '" + filename + "' AND stored_on_node = '" + NODE_NAME + "' ORDER BY id DESC LIMIT 1";
+        if (mysql_query(db_conn, query.c_str())) return crow::response(500, "DB Error");
+        
+        MYSQL_RES *result = mysql_store_result(db_conn);
+        if (!result || mysql_num_rows(result) == 0) {
+            if(result) mysql_free_result(result);
+            return crow::response(404, "File metadata not found.");
+        }
+        MYSQL_ROW row = mysql_fetch_row(result);
+        std::string iv_hex = row[0];
+        mysql_free_result(result);
+
+        // 3. Decrypt the file buffer
+        if (!decrypt_data(file_buffer, iv_hex)) {
+            return crow::response(403, "Decryption failed. File tampered or invalid key.");
+        }
+
+        // 4. Return plaintext to client
+        crow::response res(std::string(file_buffer.begin(), file_buffer.end()));
+        res.add_header("Content-Type", "application/octet-stream");
+        return res;
     });
 
     std::cout << "[*] Starting Storage Node on port 8443...\n";
