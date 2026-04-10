@@ -12,7 +12,7 @@
 #include <iomanip>
 #include <vector>
 
-const std::string MACHINE_0_IP = "10.61.56.1"; // CHANGE THIS
+const std::string MACHINE_0_IP = "10.70.69.63"; // CHANGE THIS
 const std::string NODE_NAME = "node_ubuntu"; // UNIQUE TO MACHINE 2
 
 std::string ACTIVE_MASTER_KEY = "";
