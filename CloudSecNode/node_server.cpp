@@ -1,3 +1,12 @@
+/* g++ node_server.cpp -o node_server \
+    -I$(brew --prefix mariadb-connector-c)/include/mariadb \
+    -I$(brew --prefix openssl)/include \
+    -I$(brew --prefix asio)/include \
+    -L$(brew --prefix mariadb-connector-c)/lib \
+    -L$(brew --prefix openssl)/lib \
+    -lmariadb -lssl -lcrypto -lcurl
+*/
+// g++ node_server.cpp -o node_server -I/usr/include/mariadb -lmariadb -lssl -lcrypto -lcurl -lpthread
 #define CROW_ENABLE_SSL
 #include "include/crow_all.h" 
 #include <mysql.h>
